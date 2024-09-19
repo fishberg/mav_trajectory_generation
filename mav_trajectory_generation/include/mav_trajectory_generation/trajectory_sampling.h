@@ -21,7 +21,7 @@
 #ifndef MAV_TRAJECTORY_GENERATION_TRAJECTORY_SAMPLING_H_
 #define MAV_TRAJECTORY_GENERATION_TRAJECTORY_SAMPLING_H_
 
-#include <mav_msgs/eigen_mav_msgs.h>
+#include <mav_msgs/eigen_mav_msgs.hpp>
 #include "mav_trajectory_generation/trajectory.h"
 
 namespace mav_trajectory_generation {

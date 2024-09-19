@@ -22,7 +22,7 @@ MarkerGroup::MarkerGroup() {}
 
 MarkerGroup::~MarkerGroup() {}
 
-void MarkerGroup::getMarkers(MarkerVector& markers, const double& scale,
+void MarkerGroup::getMarkers(MarkerVector &markers, const double &scale,
                              bool append) const {
   if (!append && scale == 1) {
     markers = markers_;
@@ -37,7 +37,7 @@ void MarkerGroup::getMarkers(MarkerVector& markers, const double& scale,
     if (scale == 1) {
       markers.push_back(*it);
     } else {
-      visualization_msgs::Marker m = *it;
+      visualization_msgs::msg::Marker m = *it;
       m.pose.position.x *= scale;
       m.pose.position.y *= scale;
       m.pose.position.z *= scale;
@@ -49,27 +49,27 @@ void MarkerGroup::getMarkers(MarkerVector& markers, const double& scale,
   }
 }
 
-void MarkerGroup::getMarkers(visualization_msgs::MarkerArray& marker_array,
-                             const double& scale, bool append) const {
+void MarkerGroup::getMarkers(visualization_msgs::msg::MarkerArray &marker_array,
+                             const double &scale, bool append) const {
   getMarkers(marker_array.markers, scale, append);
 }
 
-void MarkerGroup::setNamespace(const std::string& ns) {
+void MarkerGroup::setNamespace(const std::string &ns) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
     it->ns = ns;
   }
 }
 
-void MarkerGroup::setHeader(const std_msgs::Header& header) {
+void MarkerGroup::setHeader(const std_msgs::msg::Header &header) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
     it->header = header;
   }
 }
 
-void MarkerGroup::setHeaderAndNamespace(const std_msgs::Header& header,
-                                        const std::string& ns) {
+void MarkerGroup::setHeaderAndNamespace(const std_msgs::msg::Header &header,
+                                        const std::string &ns) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
     it->ns = ns;
@@ -77,7 +77,7 @@ void MarkerGroup::setHeaderAndNamespace(const std_msgs::Header& header,
   }
 }
 
-void MarkerGroup::setAction(const int32_t& action) {
+void MarkerGroup::setAction(const int32_t &action) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
     it->action = action;
@@ -87,7 +87,7 @@ void MarkerGroup::setAction(const int32_t& action) {
 void MarkerGroup::setLifetime(double lifetime) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
-    it->lifetime = ros::Duration(lifetime);
+    it->lifetime = rclcpp::Duration::from_seconds(lifetime);
   }
 }
 
@@ -98,18 +98,19 @@ void MarkerGroup::setFrameLocked(bool locked) {
   }
 }
 
-void MarkerGroup::publish(ros::Publisher& pub) {
+void MarkerGroup::publish(
+    rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr &pub) {
   for (MarkerVector::iterator it = markers_.begin(); it < markers_.end();
        it++) {
-    pub.publish(*it);
+    pub->publish(*it);
   };
 }
 
-void MarkerGroup::transformMarker(visualization_msgs::Marker& marker,
-                                  const Eigen::Vector3d& t,
-                                  const Eigen::Quaterniond& q) {
-  geometry_msgs::Pose::_orientation_type& mq = marker.pose.orientation;
-  geometry_msgs::Pose::_position_type& mp = marker.pose.position;
+void MarkerGroup::transformMarker(visualization_msgs::msg::Marker &marker,
+                                  const Eigen::Vector3d &t,
+                                  const Eigen::Quaterniond &q) {
+  geometry_msgs::msg::Pose::_orientation_type &mq = marker.pose.orientation;
+  geometry_msgs::msg::Pose::_position_type &mp = marker.pose.position;
 
   Eigen::Quaterniond e_mq(mq.w, mq.x, mq.y, mq.z);
   Eigen::Vector3d e_mp(mp.x, mp.y, mp.z);
@@ -127,10 +128,10 @@ void MarkerGroup::transformMarker(visualization_msgs::Marker& marker,
   mp.z = e_mp[2];
 }
 
-void MarkerGroup::transform(const Eigen::Vector3d& t,
-                            const Eigen::Quaterniond& q) {
+void MarkerGroup::transform(const Eigen::Vector3d &t,
+                            const Eigen::Quaterniond &q) {
   for (MarkerVector::iterator it = markers_.begin(); it != markers_.end(); ++it)
     transformMarker(*it, t, q);
 }
 
-}  // namespace mav_visualization
+} // namespace mav_visualization

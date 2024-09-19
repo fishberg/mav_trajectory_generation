@@ -21,12 +21,12 @@ namespace mav_visualization {
 LeicaMarker::LeicaMarker() { createLeica(); }
 
 void LeicaMarker::createLeica() {
-  visualization_msgs::Marker marker;
+  visualization_msgs::msg::Marker marker;
   const double tripod_height = 1.35;
   const double head_height = 0.3;
 
   // make rotors
-  marker.type = visualization_msgs::Marker::CYLINDER;
+  marker.type = visualization_msgs::msg::Marker::CYLINDER;
   marker.scale.x = 0.02;
   marker.scale.y = 0.02;
   marker.scale.z = 1.35 / cos(15.0 / 180.0 * M_PI);

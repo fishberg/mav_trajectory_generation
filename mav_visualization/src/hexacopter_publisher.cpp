@@ -16,14 +16,14 @@
 
 #include "mav_visualization/hexacopter_marker.h"
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ros::init(argc, argv, "hexacopter_publisher");
   ros::NodeHandle nh;
   ros::NodeHandle nh_private("~");
 
   ros::Publisher marker_pub =
-      nh_private.advertise<visualization_msgs::MarkerArray>("marker_array", 10,
-                                                            true);
+      nh_private.advertise<visualization_msgs::msg::MarkerArray>("marker_array",
+                                                                 10, true);
 
   std::string frame_id("state");
   double scale = 1.0;

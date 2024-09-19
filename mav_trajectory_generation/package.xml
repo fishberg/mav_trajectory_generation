@@ -14,15 +14,12 @@
 
   <license>ASL 2.0</license>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <buildtool_depend>catkin_simple</buildtool_depend>
-
   <depend>cmake_modules</depend>
-  <depend>eigen_catkin</depend>
-  <depend>eigen_checks</depend>
-  <depend>glog_catkin</depend>
   <depend>mav_msgs</depend>
-  <depend>nlopt</depend>
+  <!--depend>nlopt</depend-->
 
-  <exec_depend>yaml_cpp_catkin</exec_depend>
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+
 </package>

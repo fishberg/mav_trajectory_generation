@@ -25,11 +25,11 @@ HexacopterMarker::HexacopterMarker(bool simple) : MarkerGroup() {
 void HexacopterMarker::createHexacopter(bool simple) {
   const double sqrt2_2 = sqrt(2) / 2;
 
-  visualization_msgs::Marker marker;
+  visualization_msgs::msg::Marker marker;
   marker.id = 0;
 
   // Make rotors.
-  marker.type = visualization_msgs::Marker::CYLINDER;
+  marker.type = visualization_msgs::msg::Marker::CYLINDER;
   marker.ns = "hexacopter";
   marker.scale.x = 0.2;
   marker.scale.y = 0.2;
@@ -83,7 +83,7 @@ void HexacopterMarker::createHexacopter(bool simple) {
 
   if (simple) {
     // Make arms.
-    marker.type = visualization_msgs::Marker::CUBE;
+    marker.type = visualization_msgs::msg::Marker::CUBE;
     marker.scale.x = 0.44;
     marker.scale.y = 0.02;
     marker.scale.z = 0.01;
@@ -116,7 +116,7 @@ void HexacopterMarker::createHexacopter(bool simple) {
     markers_.push_back(marker);
   } else {
     int id = marker.id;
-    marker = visualization_msgs::Marker();
+    marker = visualization_msgs::msg::Marker();
     marker.id = id + 1;
     marker.ns = "hexacopter";
     marker.mesh_resource =
@@ -130,7 +130,7 @@ void HexacopterMarker::createHexacopter(bool simple) {
     marker.color.g = 0.3;
     marker.color.b = 0.3;
     marker.pose.position.z = -0.03;
-    marker.type = visualization_msgs::Marker::MESH_RESOURCE;
+    marker.type = visualization_msgs::msg::Marker::MESH_RESOURCE;
     markers_.push_back(marker);
 
     marker.id++;
@@ -150,4 +150,4 @@ void HexacopterMarker::createHexacopter(bool simple) {
   this->setFrameLocked(true);
 }
 
-}  // namespace mav_visualization
+} // namespace mav_visualization

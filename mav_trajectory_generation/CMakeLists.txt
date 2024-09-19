@@ -1,28 +1,31 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.16)
 project(mav_trajectory_generation)
 
-find_package(catkin_simple REQUIRED)
-catkin_simple(ALL_DEPS_REQUIRED)
-
 set(CMAKE_MACOSX_RPATH 0)
-add_definitions(-std=c++11)
+add_definitions(-std=c++14)
 
-# Link against system catkin yaml-cpp if installed.
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+#find_package(nlopt REQUIRED)
+find_package(NLopt REQUIRED)
+#SET(NLOPT_LIBRARY "/usr/local/lib/libnlopt.so")
+#SET(NLOPT_LIBRARIES "/usr/local/lib/libnlopt.so.0" "/usr/local/lib/libnlopt.so.0.10.0")
+find_package(glog REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(eigen3_cmake_module REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(mav_msgs REQUIRED)
 find_package(PkgConfig)
-find_package(yaml_cpp_catkin QUIET)
-if(${yaml_cpp_catkin_FOUND})
-    message(STATUS "Found yaml_cpp_catkin, using instead of system library.")
-    set(YamlCpp_LIBRARIES ${yaml_cpp_catkin_LIBRARIES})
-    set(YamlCpp_INCLUDE_DIRS ${yaml_cpp_catkin_INCLUDE_DIRS})
-else()
-    message(STATUS "No yaml_cpp_catkin, using yaml-cpp system library instead.")
-    pkg_check_modules(YamlCpp REQUIRED yaml-cpp>=0.5)
-endif()
+find_package(ament_cmake_gtest REQUIRED)
+pkg_check_modules(YamlCpp REQUIRED yaml-cpp>=0.5)
+
+message(MAV_MSGS_INCL="${mav_msgs_INCLUDE_DIRS}")
 
 #############
 # LIBRARIES #
 #############
-cs_add_library(${PROJECT_NAME}
+
+add_library(${PROJECT_NAME}
   src/motion_defines.cpp
   src/polynomial.cpp
   src/segment.cpp
@@ -33,32 +36,53 @@ cs_add_library(${PROJECT_NAME}
   src/io.cpp
   src/rpoly/rpoly_ak1.cpp
 )
-# Link against yaml-cpp.
-target_link_libraries(${PROJECT_NAME} ${YamlCpp_LIBRARIES})
+
+#ament_target_dependencies(${PROJECT_NAME} ${YamlCpp_LIBRARIES})
+ament_target_dependencies(${PROJECT_NAME} ${YamlCpp} rclcpp Eigen3 mav_msgs geometry_msgs)
+target_link_libraries(${PROJECT_NAME} glog::glog)
+
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
+
 
 ############
 # BINARIES #
 ############
-cs_add_executable(polynomial_timing_evaluation
-  src/polynomial_timing_evaluation.cpp
-)
+add_executable(polynomial_timing_evaluation src/polynomial_timing_evaluation.cpp)
 target_link_libraries(polynomial_timing_evaluation ${PROJECT_NAME})
+
+ament_target_dependencies(polynomial_timing_evaluation glog)
 
 #########
 # TESTS #
 #########
-catkin_add_gtest(test_polynomial
-  test/test_polynomial.cpp
-)
-target_link_libraries(test_polynomial ${PROJECT_NAME} ${catkin_LIBRARIES})
 
-catkin_add_gtest(test_polynomial_optimization
-  test/test_polynomial_optimization.cpp
-)
-target_link_libraries(test_polynomial_optimization ${PROJECT_NAME} ${catkin_LIBRARIES})
+#ament_add_gtest(test_polynomial test/test_polynomial.cpp)
+#ament_target_dependencies(test_polynomial ${PROJECT_NAME})
+#target_link_libraries(test_polynomial ${PROJECT_NAME})
+
+#ament_add_gtest(test_polynomial_optimization test/test_polynomial_optimization.cpp)
+#ament_target_dependencies(test_polynomial_optimization ${PROJECT_NAME})
+#target_link_libraries(test_polynomial_optimization ${PROJECT_NAME})
+
+
 
 ##########
 # EXPORT #
 ##########
-cs_install()
-cs_export()
+
+#install(TARGETS ${PROJECT_NAME} test_polynomial test_polynomial_optimization DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ${PROJECT_NAME}
+        EXPORT ${PROJECT_NAME}Targets
+        DESTINATION lib/${PROJECT_NAME})
+
+install(
+  DIRECTORY include/
+  DESTINATION include/
+)
+
+ament_export_include_directories("include/${PROJECT_NAME}")
+
+ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
+# TODO: ament_export_dependencies(some_dependency) ???
+
+ament_package()
