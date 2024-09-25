@@ -19,7 +19,11 @@ find_package(PkgConfig)
 find_package(ament_cmake_gtest REQUIRED)
 pkg_check_modules(YamlCpp REQUIRED yaml-cpp>=0.5)
 
-message(MAV_MSGS_INCL="${mav_msgs_INCLUDE_DIRS}")
+#message(MAV_MSGS_INCL="${mav_msgs_INCLUDE_DIRS}")
+#foreach(dir ${mav_msgs_INCLUDE_DIRS})
+#    message("Include directory: ${dir}")
+#endforeach()
+#include_directories(~/vnav/ws/lab4/src/mav_comm/mav_msgs/include)
 
 #############
 # LIBRARIES #
@@ -42,7 +46,7 @@ ament_target_dependencies(${PROJECT_NAME} ${YamlCpp} rclcpp Eigen3 mav_msgs geom
 target_link_libraries(${PROJECT_NAME} glog::glog)
 
 target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
-
+target_include_directories(${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
 
 ############
 # BINARIES #
